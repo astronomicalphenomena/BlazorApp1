@@ -1,35 +1,45 @@
-﻿@page "/ocrlabel/{BookName}/{PageNumber}"
+﻿@page "/ocrlabel/{BookName}"
 @inject Data.BlazorApp1Context MyService
 @using Microsoft.AspNetCore.Mvc.RazorPages;
 @using Microsoft.EntityFrameworkCore;
 <PageTitle>OCR标注</PageTitle>
-<h3>OCR标注  @BookName 第 @PageNumber 页 </h3>
 
-<img title="第 @PageNumber 页" src="ocrlabel/@BookName/@(PageNumber).jpg" />
-<EditForm Model="@OCRbook" OnSubmit="@HandleSubmit">
-    <table class="table">
-        <tbody>
-            @foreach (var item in @OCRbook.Text.rec_res)
-            {
-                <tr>
-                    <td>
-                        <InputText id="name" @bind-Value="item.Text" />
-                    </td>
-                    <td>
-                        @item[1]
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    
-    <button type="submit">Submit</button>
+@if (OCRbook == null)
+{
+    <p><em>页码不存在</em></p>
+}
+<EditForm Model="@PageNumber" OnSubmit="@FindPage">
+    跳转到第
+    <InputText id="page" @bind-Value="PageNumber" style="width:100%" />
+    页
 </EditForm>
+@if (OCRbook != null)
+{
+    <h3>OCR标注  @BookName 第 @PageNumber 页 </h3>
 
+    <img title="第 @PageNumber 页" src="ocrlabel/@BookName/@(PageNumber).jpg" />
+    <EditForm Model="@OCRbook" OnSubmit="@HandleSubmit">
+        <table class="table">
+            <tbody>
+                @foreach (var item in @OCRbook.Text.rec_res)
+                {
+                    <tr>
+                        <td width="90%">
+                            <InputText id="name" @bind-Value="item.Text" style="width:100%"/>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+
+        <button type="submit">Submit</button>
+    </EditForm>
+}
 @code {
     [Parameter]
-    public string PageNumber { get; set; }
+    public string PageNumber { get; set; } = "1";
     [Parameter]
     public string BookName { get; set; }
 
@@ -39,16 +49,27 @@
     {
         PageNumber = PageNumber ?? "fantastic";
         MyService.BookName.ToList();
-        OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName).OrderBy(b => b.PageNumber).ToList().ElementAt(int.Parse(PageNumber) - 1);
-        
+       
+
+    }
+    protected override void OnParametersSet()
+    {
+        OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName && b.PageNumber == int.Parse(PageNumber)).FirstOrDefault();
+        base.OnParametersSet();
     }
     private void HandleSubmit()
     {
-       
+        MyService.OCRbook.Update(OCRbook);
+        MyService.SaveChanges();
 
         // Process the form
     }
 
-
+    private void FindPage()
+    {
+        OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName && b.PageNumber == int.Parse(PageNumber)).FirstOrDefault();
+        
+        // Process the form
+    }
 
 }
