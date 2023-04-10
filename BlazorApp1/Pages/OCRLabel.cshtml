@@ -1,0 +1,42 @@
+﻿@page
+@model BlazorApp1.Pages.IndexModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+<p>
+    <a href="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OCRbook[0].Text)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.OCRbook) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Text.rec_res[0].Text)
+            </td>
+            <td>
+                 @Html.DisplayFor(modelItem => item.BookName.Name)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+</body>
+</html>

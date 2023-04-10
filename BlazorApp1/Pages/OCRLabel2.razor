@@ -1,0 +1,54 @@
+﻿@page "/ocrlabel/{BookName}/{PageNumber}"
+@inject Data.BlazorApp1Context MyService
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using Microsoft.EntityFrameworkCore;
+<PageTitle>OCR标注</PageTitle>
+<h3>OCR标注  @BookName 第 @PageNumber 页 </h3>
+
+<img title="第 @PageNumber 页" src="ocrlabel/@BookName/@(PageNumber).jpg" />
+<EditForm Model="@OCRbook" OnSubmit="@HandleSubmit">
+    <table class="table">
+        <tbody>
+            @foreach (var item in @OCRbook.Text.rec_res)
+            {
+                <tr>
+                    <td>
+                        <InputText id="name" @bind-Value="item.Text" />
+                    </td>
+                    <td>
+                        @item[1]
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string PageNumber { get; set; }
+    [Parameter]
+    public string BookName { get; set; }
+
+    public Data.OCRbook OCRbook { get; set; }
+
+    protected override void OnInitialized()
+    {
+        PageNumber = PageNumber ?? "fantastic";
+        MyService.BookName.ToList();
+        OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName).OrderBy(b => b.PageNumber).ToList().ElementAt(int.Parse(PageNumber) - 1);
+        
+    }
+    private void HandleSubmit()
+    {
+       
+
+        // Process the form
+    }
+
+
+
+}
