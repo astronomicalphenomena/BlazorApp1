@@ -10,14 +10,14 @@
 }
 <EditForm Model="@PageNumber" OnSubmit="@FindPage">
     跳转到第
-    <InputText id="page" @bind-Value="PageNumber" style="width:100%" />
+    <InputText id="page" @bind-Value="PageNumber"  />
     页
 </EditForm>
 @if (OCRbook != null)
 {
     <h3>OCR标注  @BookName 第 @PageNumber 页 </h3>
 
-    <img title="第 @PageNumber 页" src="ocrlabel/@BookName/@(PageNumber).jpg" />
+    <img title="第 @PageNumber 页" src="ocrlabel/@BookName/@(PageNumber).jpg" style="max-width:100%;overflow:hidden;" />
     <EditForm Model="@OCRbook" OnSubmit="@HandleSubmit">
         <table class="table">
             <tbody>
@@ -25,16 +25,31 @@
                 {
                     <tr>
                         <td width="90%">
-                            <InputText id="name" @bind-Value="item.Text" style="width:100%"/>
+                            <InputText  id="name" @bind-Value="item.Text" style="width:100%"/>
                         </td>
 
                     </tr>
                 }
             </tbody>
+            <tfoot>
+                <tr>
+                    <h5>OCR标注  @BookName 第 @PageNumber 页 </h5>
+                </tr>
+                <tr>
+                    
+                    <td>
+                        <button class="btn btn-primary" type="submit" accesskey="s">提交</button>
+                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();FindPage();})">上一页</button>
+                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();FindPage();})">下一页</button>
+                    </td>
+
+                        
+                </tr>
+            </tfoot>
         </table>
 
 
-        <button type="submit">Submit</button>
+        
     </EditForm>
 }
 @code {
