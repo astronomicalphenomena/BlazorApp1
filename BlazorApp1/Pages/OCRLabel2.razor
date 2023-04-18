@@ -8,7 +8,7 @@
 {
     <p><em>页码不存在</em></p>
 }
-<EditForm Model="@PageNumber" OnSubmit="@FindPage">
+<EditForm Model="@PageNumber" OnSubmit="@OnParametersSet">
     跳转到第
     <InputText id="page" @bind-Value="PageNumber"  />
     页
@@ -39,8 +39,8 @@
                     
                     <td>
                         <button class="btn btn-primary" type="submit" accesskey="s">提交</button>
-                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();FindPage();})">上一页</button>
-                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();FindPage();})">下一页</button>
+                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</button>
+                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</button>
                     </td>
 
                         
@@ -70,7 +70,6 @@
     protected override void OnParametersSet()
     {
         OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName && b.PageNumber == int.Parse(PageNumber)).FirstOrDefault();
-        base.OnParametersSet();
     }
     private void HandleSubmit()
     {
@@ -80,11 +79,5 @@
         // Process the form
     }
 
-    private void FindPage()
-    {
-        OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName && b.PageNumber == int.Parse(PageNumber)).FirstOrDefault();
-        
-        // Process the form
-    }
 
 }
