@@ -8,11 +8,7 @@
 {
     <p><em>页码不存在</em></p>
 }
-<EditForm Model="@PageNumber" OnSubmit="@OnParametersSet">
-    跳转到第
-    <InputText id="page" @bind-Value="PageNumber"/>
-    页
-</EditForm>
+
 @if (OCRbook != null)
 {
     <h3>OCR标注  @BookName 第 @PageNumber 页 </h3>
@@ -35,22 +31,24 @@
                 <tr>
                     <h5>OCR标注  @BookName 第 @PageNumber 页 </h5>
                 </tr>
-                <tr>
-                    
-                    <td>
-                        <Button  type="submit">提交</Button>
-                        <Button  type="primary" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</Button>
-                        <Button  type="primary" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</Button>
-                    </td>
-
-                        
-                </tr>
+               
             </tfoot>
         </table>
 
 
         
     </EditForm>
+    <Affix OffsetBottom=10>
+    <EditForm Model="@PageNumber" OnSubmit="@OnParametersSet">
+        <Button Size="@ButtonSize.Large" type="submit">提交</Button>
+        <Button Size="@ButtonSize.Large" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</Button>
+        <Button Size="@ButtonSize.Large" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</Button>
+         第 @PageNumber 页 
+        跳转到第
+        <InputText id="page" @bind-Value="PageNumber" />
+        页
+    </EditForm>
+    </Affix>
 }
 @code {
     [Parameter]
