@@ -10,7 +10,7 @@
 }
 <EditForm Model="@PageNumber" OnSubmit="@OnParametersSet">
     跳转到第
-    <InputText id="page" @bind-Value="PageNumber"  />
+    <InputText id="page" @bind-Value="PageNumber"/>
     页
 </EditForm>
 @if (OCRbook != null)
@@ -38,9 +38,9 @@
                 <tr>
                     
                     <td>
-                        <button class="btn btn-primary" type="submit" accesskey="s">提交</button>
-                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</button>
-                        <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</button>
+                        <Button  type="submit">提交</Button>
+                        <Button  type="primary" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</Button>
+                        <Button  type="primary" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</Button>
                     </td>
 
                         
