@@ -21,7 +21,7 @@
     <EditForm Model="@OCRbook" OnSubmit="@HandleSubmit">
         <table class="table">
             <tbody>
-                @foreach (var item in @OCRbook.Text.rec_res)
+                @foreach (var item in @OCRbook)
                 {
                     <tr>
                         <td width="90%">
@@ -41,6 +41,8 @@
                         <button class="btn btn-primary" type="submit" accesskey="s">提交</button>
                         <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</button>
                         <button class="btn btn-primary" type="button" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</button>
+                        @*<button class="btn btn-primary" type="button" @onclick="@(TransDB)">转换</button>*@
+
                     </td>
 
                         
@@ -58,26 +60,56 @@
     [Parameter]
     public string BookName { get; set; }
 
-    public Data.OCRbook OCRbook { get; set; }
+    public IEnumerable<Data.OCRBookLine> OCRbook { get; set; }
 
+    
     protected override void OnInitialized()
     {
         PageNumber = PageNumber ?? "fantastic";
         MyService.BookName.ToList();
-       
+
 
     }
     protected override void OnParametersSet()
     {
-        OCRbook = MyService.OCRbook.Where(b => b.BookName.Name == BookName && b.PageNumber == int.Parse(PageNumber)).FirstOrDefault();
+        OCRbook = MyService.OCRBookLine.Where(b => b.BookName.Name == BookName && b.PageNumber == int.Parse(PageNumber));
     }
     private void HandleSubmit()
     {
-        MyService.OCRbook.Update(OCRbook);
+        foreach(var b in OCRbook)
+        {
+            MyService.OCRBookLine.Update(b);
+        }
         MyService.SaveChanges();
-
         // Process the form
     }
 
+    private async void TransDB()
+    {
+        var OCRbooks = await MyService.OCRbook.ToListAsync();
 
+        var Lines = OCRbooks.SelectMany(getLine).ToArray();
+
+        await MyService.OCRBookLine.AddRangeAsync(Lines);
+
+        await MyService.SaveChangesAsync();
+    }
+
+    private IEnumerable<Data.OCRBookLine> getLine(Data.OCRbook o)
+    {
+        var Lines = o.Text.rec_res.Zip(o.Text.boxes).ToList();
+        foreach(var i in Enumerable.Range(0,Lines.Count))
+        {
+            var line = new Data.OCRBookLine();
+            line.BookNameID = o.BookNameID;
+            line.PageNumber = o.PageNumber;
+            line.Line = i;
+            line.Text = Lines[i].First.Text;
+            line.Top = (int)MathF.Round(Lines[i].Second[0]);
+            line.Right = (int)Lines[i].Second[1];
+            line.Bottom = (int)Lines[i].Second[2];
+            line.Left = (int)Lines[i].Second[3];
+            yield return line;
+        }
+    }
 }

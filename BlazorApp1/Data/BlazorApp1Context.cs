@@ -18,6 +18,7 @@ namespace BlazorApp1.Data
 
         public DbSet<BlazorApp1.Data.OCRbook> OCRbook { get; set; } = default!;
         public DbSet<BlazorApp1.Data.BookName> BookName { get; set; }
+        public DbSet<BlazorApp1.Data.OCRBookLine> OCRBookLine { get; set; } = default!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
