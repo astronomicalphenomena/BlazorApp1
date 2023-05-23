@@ -13,6 +13,7 @@ builder.Services.AddDbContext<BlazorApp1Context>(options =>
 
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+builder.Services.AddAntDesign();
 
 var app = builder.Build();
 
