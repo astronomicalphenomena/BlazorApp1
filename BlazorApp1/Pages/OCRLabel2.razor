@@ -40,7 +40,12 @@
     </EditForm>
     <Affix OffsetBottom=10>
     <EditForm Model="@PageNumber" OnSubmit="@OnParametersSet">
-        <Button Size="@ButtonSize.Large" type="submit">提交</Button>
+        <AuthorizeView Roles="Write" Context="innerContext">
+            <Authorized>
+                <Button Size="@ButtonSize.Large" type="submit">提交</Button>
+            </Authorized>
+        </AuthorizeView>
+        
         <Button Size="@ButtonSize.Large" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)-1).ToString();OnParametersSet();})">上一页</Button>
         <Button Size="@ButtonSize.Large" @onclick="@(e=>{PageNumber = (int.Parse(PageNumber)+1).ToString();OnParametersSet();})">下一页</Button>
         @*<button class="btn btn-primary" type="button" @onclick="@(TransDB)">转换</button>*@
